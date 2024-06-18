@@ -12,7 +12,11 @@ cve_fetch/
 │   │   ├── __init__.py
 │   │   ├── routes.py
 │   │   ├── templates/
+│   │   │   ├── base.html
+│   │   │   ├── index.html
+│   │   │   └── visualizations.html
 │   │   └── static/
+│   │       └── style.css
 │   ├── cves_db.json
 │   ├── requirements.txt
 │   ├── run.py
@@ -29,6 +33,7 @@ cve_fetch/
 ├── README.md
 ├── requirements.txt
 └── tools.txt
+
 ```
 
 ## Files in this Repository
