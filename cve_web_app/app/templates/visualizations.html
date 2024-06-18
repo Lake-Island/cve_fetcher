@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="content-wrapper">
+    <div class="row">
+        <div class="col-12">
+            <h2>Severity Distribution</h2>
+            <div id="severity-chart"></div>
+        </div>
+        <div class="col-12">
+            <h2>Vendor Distribution</h2>
+            <div id="vendor-chart"></div>
+        </div>
+        <div class="col-12">
+            <h2>Description Count</h2>
+            <div id="description-chart"></div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script>
+    var severityData = {{ severity_data | tojson }};
+    var vendorData = {{ vendor_data | tojson }};
+    var descriptionData = {{ description_data | tojson }};
+
+    var chartLayout = {
+        plot_bgcolor: '#2c2f33',
+        paper_bgcolor: '#2c2f33',
+        font: {
+            color: '#ffffff'
+        }
+    };
+
+    var severityChart = {
+        data: [{
+            x: severityData.map(d => d.severity),
+            y: severityData.map(d => d.count),
+            type: 'bar',
+            marker: {
+                color: '#7289da'
+            }
+        }],
+        layout: Object.assign({
+            title: 'Severity Distribution',
+        }, chartLayout)
+    };
+
+    var vendorChart = {
+        data: [{
+            x: vendorData.map(d => d.vendor),
+            y: vendorData.map(d => d.count),
+            type: 'bar',
+            marker: {
+                color: '#43b581'
+            }
+        }],
+        layout: Object.assign({
+            title: 'Vendor Distribution',
+        }, chartLayout)
+    };
+
+    var descriptionChart = {
+        data: [{
+            x: descriptionData.map(d => d.description),
+            y: descriptionData.map(d => d.count),
+            type: 'bar',
+            marker: {
+                color: '#f04747'
+            }
+        }],
+        layout: Object.assign({
+            title: 'Description Count',
+        }, chartLayout)
+    };
+
+    Plotly.newPlot('severity-chart', severityChart.data, severityChart.layout);
+    Plotly.newPlot('vendor-chart', vendorChart.data, vendorChart.layout);
+    Plotly.newPlot('description-chart', descriptionChart.data, descriptionChart.layout);
+</script>
+{% endblock %}
