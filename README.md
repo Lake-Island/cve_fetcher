@@ -52,6 +52,8 @@ cve_fetch/
 
 - Docker
 - Docker Compose (optional but recommended)
+- Python 3.x (if running without Docker)
+- Virtual environment (optional but recommended)
 
 ### Setting Up
 
@@ -61,19 +63,58 @@ cve_fetch/
     cd cve_fetcher
     ```
 
-2. **Build the Docker image:**
+2. **Create and configure the `.env` file:**
+    ```sh
+    cp .env.example .env
+    ```
+    Fill in the `.env` file with your NVD API key and Discord webhook URL.
+
+    ```env
+    NVD_API_KEY=your_nvd_api_key
+    DISCORD_WEBHOOK_URL=your_discord_webhook_url
+    ```
+
+### Using Docker
+
+1. **Build the Docker image:**
     ```sh
     docker build -t cve_fetch_app .
     ```
 
-3. **Run the Docker container:**
+2. **Run the Docker container:**
     ```sh
     docker run -d -p 5000:5000 cve_fetch_app
     ```
 
-### Script Descriptions
+3. **Access the Flask web application:**
+    Open your browser and go to `http://localhost:5000`.
 
-#### `fetch_cves.py`
+### Using Python Environment (Alternative to Docker)
+
+1. **Create a virtual environment (optional but recommended):**
+    ```sh
+    python -m venv myenv
+    source myenv/bin/activate  # On Windows use `myenv\Scripts\activate`
+    ```
+
+2. **Install required packages:**
+    ```sh
+    pip install -r requirements.txt
+    ```
+
+3. **Set up your NVD API Key and Discord Webhook URL in the `.env` file.**
+
+4. **Run the Flask web application:**
+    ```sh
+    python cve_web_app/run.py
+    ```
+
+5. **Access the Flask web application:**
+    Open your browser and go to `http://localhost:5000`.
+
+## Script Descriptions
+
+### `fetch_cves.py`
 
 This script fetches CVEs from the NVD API based on the tools and hardware specified in `tools.txt`. It performs the following steps:
 1. Fetches the latest CVEs from the NVD API.
@@ -81,16 +122,14 @@ This script fetches CVEs from the NVD API based on the tools and hardware specif
 3. Saves the new CVEs to `cves_db.json` to avoid duplicates.
 4. Sends the filtered CVEs to a specified Discord webhook.
 
-The script ensures that only new CVEs are fetched by checking the database for existing entries. This prevents re-fetching of CVEs that have already been processed.
-
-#### `db_maintenance.py`
+### `db_maintenance.py`
 
 This script performs maintenance on the `cves_db.json` database. It:
 1. Removes CVE entries older than a specified number of days (default is 14 days).
 2. Keeps the database file size manageable by removing outdated entries.
 3. Ensures that the fetch script only fetches new CVEs without re-fetching old ones by maintaining the most recent entries.
 
-### Automating with Cron Jobs
+## Automating with Cron Jobs
 
 The cron jobs are set up automatically within the Docker container to run the scripts periodically.
 
@@ -112,13 +151,28 @@ You can monitor the logs to ensure the cron jobs are running correctly:
     cat /var/log/cron_db_maintenance.log
     ```
 
-### Webhooks for Other Apps
+### Webhooks for Other Platforms
 
-You can set up webhooks for other apps such as Slack or Microsoft Teams:
+**Slack**:
+- Follow [this guide](https://api.slack.com/messaging/webhooks) to create a Slack webhook.
+- Replace the Discord webhook URL with your Slack webhook URL in the `.env` file.
 
-- **Slack:** Follow [this guide](https://api.slack.com/messaging/webhooks) to create a Slack webhook.
-- **Microsoft Teams:** Follow [this guide](https://docs.microsoft.com/en-us/microsoftteams/platform/webhooks-and-connectors/how-to/add-incoming-webhook) to create a Teams webhook.
-- **Mattermost:** Follow [this guide](https://docs.mattermost.com/developer/webhooks-incoming.html) to create a Mattermost webhook.
+**Microsoft Teams**:
+- Follow [this guide](https://docs.microsoft.com/en-us/microsoftteams/platform/webhooks-and-connectors/how-to/add-incoming-webhook) to create a Teams webhook.
+- Replace the Discord webhook URL with your Teams webhook URL in the `.env` file.
+
+**Mattermost**:
+- Follow [this guide](https://docs.mattermost.com/developer/webhooks-incoming.html) to create a Mattermost webhook.
+- Replace the Discord webhook URL with your Mattermost webhook URL in the `.env` file.
+
+### Testing
+
+You can manually run the scripts to test if they are working correctly:
+
+```sh
+python fetch_cves.py
+python db_maintenance.py
+```
 
 ### Running the Flask App
 
