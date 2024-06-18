@@ -1,0 +1,104 @@
+# The "tools" in the list are examples used when making the script, feel free to edit/remove or set up the list after your needs/environment.
+Cisco Router
+Cisco Switch
+Cisco Firewall
+HP Server
+HP ProLiant
+Dell Switch
+Dell PowerEdge
+Juniper Firewall
+Juniper Router
+NetApp Storage
+NetApp FAS
+Lenovo ThinkPad
+Lenovo Yoga
+Apple MacBook
+Apple iMac
+Apple iPhone
+Apple iPad
+Samsung SSD
+Samsung Galaxy
+Samsung Note
+Intel Processor
+Intel Xeon
+Intel Core
+Nvidia GPU
+Nvidia GeForce
+Nvidia Quadro
+Synology NAS
+Fortinet Firewall
+Fortinet FortiGate
+Ubiquiti Access Point
+Ubiquiti UniFi
+Aruba Networks Switch
+Aruba Networks Access Point
+Palo Alto Networks Firewall
+Palo Alto Networks PA-Series
+Microsoft Windows
+Microsoft Windows Server
+Microsoft Office
+Microsoft Office 365
+Adobe Acrobat
+Adobe Reader
+Adobe Photoshop
+VMware vSphere
+VMware ESXi
+VMware Workstation
+Red Hat Enterprise Linux
+RHEL
+CentOS
+Ubuntu
+Debian
+Fedora
+SUSE Linux Enterprise Server
+SLES
+Oracle Database
+Oracle E-Business Suite
+Oracle Solaris
+MySQL Database
+PostgreSQL Database
+MongoDB
+Redis
+ElasticSearch
+Apache HTTP Server
+Apache Tomcat
+Nginx
+IIS
+OpenSSL
+OpenSSH
+PHP
+Python
+Node.js
+Java
+Java Runtime Environment
+JRE
+Docker
+Kubernetes
+Ansible
+Terraform
+Jenkins
+GitLab
+GitHub
+Atlassian Jira
+Atlassian Confluence
+Splunk
+Nagios
+Zabbix
+SolarWinds
+ManageEngine
+SAP ERP
+SAP HANA
+Salesforce
+ServiceNow
+Workday
+Zoom
+Slack
+Dropbox
+Google Workspace
+Google Chrome
+Mozilla Firefox
+Microsoft Edge
+SQL Server
+Exchange Server
+SharePoint
+OneDrive
