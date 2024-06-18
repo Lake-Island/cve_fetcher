@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Recent CVEs</h1>
+    <div class="row">
+        {% for cve in cves %}
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title"><a href="https://nvd.nist.gov/vuln/detail/{{ cve['id'] }}" target="_blank">{{ cve['id'] }}</a></h5>
+                    <p class="card-text">{{ cve['data']['cve']['descriptions'][0]['value'] }}</p>
+                    <p class="card-text"><small>Published: {{ cve['data']['cve']['published'] }}</small></p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% endblock %}
