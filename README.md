@@ -1,24 +1,52 @@
-# cve_fetcher
-This repository contains Python scripts for fetching and maintaining a database of CVEs (Common Vulnerabilities and Exposures). The scripts are designed to fetch new CVEs, filter them based on relevant tools and hardware, send notifications to a Discord webhook, and perform regular maintenance on the database to keep it up to date.
+# CVE Fetcher and Dashboard
+
+This repository contains Python scripts for fetching and maintaining a database of CVEs (Common Vulnerabilities and Exposures), along with a Flask web application to display the CVEs. The scripts are designed to fetch new CVEs, filter them based on relevant tools and hardware, send notifications to a Discord webhook, and perform regular maintenance on the database to keep it up to date.
+
+## Project Structure
+
+```
+cve_fetch/
+├── crontab
+├── cve_web_app/
+│   ├── app/
+│   │   ├── __init__.py
+│   │   ├── routes.py
+│   │   ├── templates/
+│   │   └── static/
+│   ├── cves_db.json
+│   ├── requirements.txt
+│   ├── run.py
+│   └── venv/
+├── cves_db.json
+├── db_maintenance.py
+├── docker_commands.txt
+├── Dockerfile
+├── entrypoint.sh
+├── fetch_cves.py
+├── fetch_env/
+├── manage_envs.sh
+├── myenv/
+├── README.md
+├── requirements.txt
+└── tools.txt
+```
+
 ## Files in this Repository
 
 - `fetch_cves.py`: Script to fetch CVEs from the NVD API and send notifications to Discord.
 - `db_maintenance.py`: Script to remove old CVE entries from the database.
 - `tools.txt`: A list of tools and hardware to filter relevant CVEs.
 - `cves_db.json`: The database file storing CVE entries.
-- `myenv`: Python virtual environment directory (not included in the repository).
-- `requierments.txt`: Requierments for python-pip (dependencies).
-- `requierments.txt`: Requierments for python-pip (Flask app) (dependencies).
-- `Dockerfile`: To build and deploy the app in a container.
-- `entrypoint.sh`: For the deployment of the container
-- `cve_web_app`: Sub-directory containing files for Flask App.
+- `Dockerfile`: Dockerfile to build the Docker image.
+- `entrypoint.sh`: Entry point script to start cron jobs and the Flask application.
+- `cve_web_app/`: Directory containing the Flask web application.
 
 ## Getting Started
 
 ### Prerequisites
 
-- Python 3.x
-- Virtual environment (optional but recommended)
+- Docker
+- Docker Compose (optional but recommended)
 
 ### Setting Up
 
@@ -28,29 +56,15 @@ This repository contains Python scripts for fetching and maintaining a database 
     cd cve_fetcher
     ```
 
-2. **Create a virtual environment (optional but recommended):**
+2. **Build the Docker image:**
     ```sh
-    python -m venv myenv
-    source myenv/bin/activate  # On Windows use `myenv\Scripts\activate`
+    docker build -t cve_fetch_app .
     ```
 
-3. **Install required packages:**
+3. **Run the Docker container:**
     ```sh
-    pip install requests tinydb
+    docker run -d -p 5000:5000 cve_fetch_app
     ```
-
-4. **Set up your NVD API Key:**
-    - Obtain your API key from the [NVD API Key Request Page](https://nvd.nist.gov/developers/request-an-api-key).
-    - Replace the placeholder `NVD_API_KEY` in `fetch_cves.py` with your actual API key.
-
-5. **Set up your Discord Webhook URL:**
-    - Follow this [guide](https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks) to create a Discord webhook.
-    - Replace the placeholder `WEBHOOK_URL` in `fetch_cves.py` with your actual webhook URL.
-
-6. **(Optional) Set up other webhooks:**
-    - **Slack:** Follow [this guide](https://api.slack.com/messaging/webhooks) to create a Slack webhook.
-    - **Microsoft Teams:** Follow [this guide](https://docs.microsoft.com/en-us/microsoftteams/platform/webhooks-and-connectors/how-to/add-incoming-webhook) to create a Teams webhook.
-    - **Mattermost:** Follow [this guide](https://docs.mattermost.com/developer/webhooks-incoming.html) to create a Mattermost webhook.
 
 ### Script Descriptions
 
@@ -71,54 +85,48 @@ This script performs maintenance on the `cves_db.json` database. It:
 2. Keeps the database file size manageable by removing outdated entries.
 3. Ensures that the fetch script only fetches new CVEs without re-fetching old ones by maintaining the most recent entries.
 
-### Running the Scripts
-
-1. **Fetch CVEs:**
-    ```sh
-    python fetch_cves.py
-    ```
-
-2. **Database Maintenance:**
-    ```sh
-    python db_maintenance.py
-    ```
-
 ### Automating with Cron Jobs
 
-To automate the execution of these scripts, you can set up cron jobs.
+The cron jobs are set up automatically within the Docker container to run the scripts periodically.
 
-1. **Open the crontab editor:**
+- `fetch_cves.py`: Runs every 15 minutes.
+- `db_maintenance.py`: Runs every Sunday at 11 AM.
+
+### Monitoring and Logs
+
+You can monitor the logs to ensure the cron jobs are running correctly:
+
+1. **Access the running container:**
     ```sh
-    crontab -e
+    docker exec -it <container_id> /bin/bash
     ```
 
-2. **Add the following lines to schedule the scripts:**
-
+2. **Check the logs:**
     ```sh
-    # Run fetch_cves.py every day at 2 AM
-    0 2 * * * /path/to/your/env/bin/python /path/to/your/repo/fetch_cves.py
-
-    # Run db_maintenance.py every Sunday at 3 AM
-    0 3 * * 0 /path/to/your/env/bin/python /path/to/your/repo/db_maintenance.py
+    cat /var/log/cron_fetch_cves.log
+    cat /var/log/cron_db_maintenance.log
     ```
 
-    Replace `/path/to/your/env` with the actual path to your Python virtual environment, and `/path/to/your/repo` with the path to your cloned repository.
+### Webhooks for Other Apps
 
-### Testing
+You can set up webhooks for other apps such as Slack or Microsoft Teams:
 
-You can manually run the scripts to test if they are working correctly:
+- **Slack:** Follow [this guide](https://api.slack.com/messaging/webhooks) to create a Slack webhook.
+- **Microsoft Teams:** Follow [this guide](https://docs.microsoft.com/en-us/microsoftteams/platform/webhooks-and-connectors/how-to/add-incoming-webhook) to create a Teams webhook.
+- **Mattermost:** Follow [this guide](https://docs.mattermost.com/developer/webhooks-incoming.html) to create a Mattermost webhook.
 
-```sh
-python fetch_cves.py
-python db_maintenance.py
+### Running the Flask App
 
-### Contributing
-
-Feel free to fork this repository and submit pull requests. For major changes, please open an issue first to discuss what you would like to change.
+The Flask app is included in the Docker container and will be accessible at `http://localhost:5000` once the container is running.
 
 ### License
 
 This project is licensed under the MIT License.
 
+### Contributing
 
-This `README.md` file provides an overview of the repository, detailed instructions for setting up and running the scripts, descriptions of each script, and information on how to automate the process using cron jobs.
+Feel free to fork this repository and submit pull requests. For major changes, please open an issue first to discuss what you would like to change.
+
+---
+
+This `README.md` file provides an overview of the repository, detailed instructions for setting up and running the Docker container, descriptions of each script, and information on how to automate the process using cron jobs within the Docker container. Additionally, it includes instructions for setting up webhooks for other apps such as Slack or Microsoft Teams.
